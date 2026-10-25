@@ -13,7 +13,7 @@ A personalised English reading app with Hindi/Hinglish guidance, a conversationa
 - Server-validated attempts, retry feedback, idempotent submissions, account-isolated progress, XP, stars and daily goals.
 - Review scheduling: unsuccessful or assisted attempts return sooner; successful unassisted attempts are revisited after 1, 3 and 7 days.
 - Level suggestions use recent unassisted spelling and meaning answers at the current level. Self-reported reading and microphone transcripts do not drive promotion.
-- Guardian-only key configuration, real provider connection test, usage and learner evidence.
+- Guardian-only key configuration, real provider connection test, usage, learner evidence, and level/goal controls.
 - Explicit prepared-practice mode when AI is not connected. It does not impersonate live AI.
 
 ## Run locally
@@ -46,7 +46,7 @@ The local installation prepared during development already has the requested Par
 
 The default model is `openai/gpt-4.1-mini`; the request uses OpenRouter’s JSON schema response format and requires supported parameters. Provider errors, invalid keys, insufficient credits, timeouts and malformed lesson content produce explicit errors. Prepared practice remains usable.
 
-AI receives the learner’s first name, chosen interests/mood, recent learning evidence and up to 12 recent conversation messages. Full name, account password, API key and recordings are not included in model requests. Provider routing requests `data_collection: deny`; this preference is not a promise about all third-party retention. The app retains at most 200 text chat messages per learner.
+AI receives the learner’s first name, chosen interests/mood, recent learning evidence and up to 12 recent conversation messages. The stored full name, account password and API key are excluded from the AI context; the app does not send recordings to OpenRouter. Messages that the learner chooses to send are included as text. Provider routing requests `data_collection: deny`; this preference is not a promise about all third-party retention. The app retains at most 200 text chat messages per learner.
 
 Browser speech synthesis is device dependent. Microphone transcription may use the browser’s online service; WordQuest does not save recordings. Transcript matching is **not** a pronunciation assessment. Live mic and genuine model quality require testing on the learner’s device with a connected API key.
 

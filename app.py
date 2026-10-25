@@ -50,7 +50,7 @@ def limited(key,count,seconds):
 def secure_request():
     allowed={HOST}
     if LOCAL:allowed.update(('127.0.0.1:4173','localhost:4173'))
-    if request.host not in allowed and not app.testing:return fail('Unrecognised host.',400)
+    if request.host not in allowed and not app.testing and request.path!='/health':return fail('Unrecognised host.',400)
     if request.method not in ('GET','HEAD','OPTIONS'):
         origin=request.headers.get('Origin')
         valid={ORIGIN}
@@ -164,7 +164,7 @@ def adventures():
     data=body()
     if limited(('adventure',g.user['id']),6,60):return fail('Let’s finish a little practice first. Try again in a minute.',429)
     if data.get('mode')=='ai':
-        ctx=learning.context(g.user);lesson=tutor.generate(g.user['id'],ctx);lesson.update({'level':ctx['level'],'source':'ai','topic':'Personalised'})
+        ctx=learning.context(g.user,include_chat=True);lesson=tutor.generate(g.user['id'],ctx);lesson.update({'level':ctx['level'],'source':'ai','topic':'Personalised'})
     elif data.get('template'):
         match=next((x for x in learning.CURRICULUM['lessons'] if x['id']==data['template']),None)
         if not match:return fail('Lesson not found.',404)
@@ -276,6 +276,23 @@ def test_ai():
     result=tutor.complete(g.user['id'],'test',[{'role':'user','content':'Say hello to a young English learner. Return {"message":"Hello! Let us read together."}.'}],tutor.object_schema({'message':tutor.STRING}))
     message=tutor.safe_string(result.get('message'),200);set_config({'tested_at':time.time()})
     return jsonify({'ok':True,'message':message})
+
+@app.post('/api/guardian/learner')
+@auth('guardian')
+def update_learner():
+    data=body();user_id=data.get('userId')
+    if not isinstance(user_id,str):raise ValueError('Choose a learner.')
+    with db() as conn:
+        user=conn.execute("SELECT * FROM users WHERE id=? AND role='learner'",(user_id,)).fetchone()
+        if not user:return fail('Learner not found.',404)
+        p=json.loads(user['profile'])
+        if data.get('level') not in learning.LEVEL_IDS:raise ValueError('Choose a valid starting level.')
+        if type(data.get('autoLevel')) is not bool:raise ValueError('Choose whether level suggestions are enabled.')
+        goal=data.get('goal')
+        if type(goal) is not int or not 1<=goal<=4:raise ValueError('Choose 1–4 daily adventures.')
+        p.update({'level':data['level'],'autoLevel':data['autoLevel'],'goal':goal})
+        conn.execute('UPDATE users SET profile=? WHERE id=?',(dumps(p),user_id))
+    return jsonify({'ok':True,'profile':p})
 
 @app.post('/api/guardian/password')
 @auth('guardian')

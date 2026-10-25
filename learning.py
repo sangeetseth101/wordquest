@@ -49,12 +49,17 @@ def recommendation(user):
         else: reason='We’re keeping the level steady and revisiting words that need practice.'
     return {'level':level,'reason':reason}
 
-def context(user):
+def context(user,include_chat=False):
     profile=json.loads(user['profile']);rec=recommendation(user)
     with db() as conn:
         due=conn.execute("SELECT word,english,hindi,roman,max(attempts-successes) misses FROM skills WHERE user_id=? AND stage IN ('type','meaning') AND due_at<=? GROUP BY word ORDER BY misses DESC,due_at LIMIT 6",(user['id'],time.time())).fetchall()
         recent=conn.execute('SELECT word FROM events WHERE user_id=? ORDER BY created_at DESC LIMIT 30',(user['id'],)).fetchall()
-    return {'firstName':user['display_name'].split()[0],'level':rec['level'],'interests':profile.get('interests',[]),'mood':profile.get('mood','ready'),'reviewWords':[{'word':r['word'],'english':r['english'],'hindi':r['hindi'],'roman':r['roman']} for r in due],'recentWords':list(dict.fromkeys(r['word'] for r in recent))[:12],'learning':stats(user['id']),'guidance':rec['reason']}
+    evidence=stats(user['id'])
+    recent_chat=[]
+    if include_chat:
+        with db() as conn:
+            recent_chat=[r['text'] for r in conn.execute("SELECT text FROM messages WHERE user_id=? AND role='user' ORDER BY id DESC LIMIT 3",(user['id'],))]
+    return {'recentConversation':list(reversed(recent_chat)),'firstName':user['display_name'].split()[0],'level':rec['level'],'interests':profile.get('interests',[]),'mood':profile.get('mood','ready'),'reviewWords':[{'word':r['word'],'english':r['english'],'hindi':r['hindi'],'roman':r['roman']} for r in due],'recentWords':list(dict.fromkeys(r['word'] for r in recent))[:12],'learning':{key:evidence[key] for key in ('accuracy','scoredAttempts','due','completed','words')},'guidance':rec['reason']}
 
 def prepared(user):
     ctx=context(user);level=ctx['level'];interests=' '.join(ctx['interests']).lower();topics=[]

@@ -70,7 +70,7 @@ def init_db():
             (os.environ.get('WORDQUEST_GUARDIAN_USERNAME','guardian'),'Guardian',os.environ.get('WORDQUEST_GUARDIAN_PASSWORD'),'guardian')]
         for username, name, password, role in seeds:
             if password and not conn.execute('SELECT id FROM users WHERE username=?',(username,)).fetchone():
-                if len(password)<12:
+                if len(password)<12 or password.startswith('REPLACE_'):
                     raise RuntimeError('Seed passwords must contain at least 12 characters.')
                 conn.execute('INSERT INTO users VALUES(?,?,?,?,?,?,?)',(secrets.token_hex(12),username.lower(),name,password_hash(password),role,dumps(DEFAULT_PROFILE),time.time()))
         conn.execute('DELETE FROM sessions WHERE expires_at<?',(time.time(),))

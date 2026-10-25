@@ -232,6 +232,18 @@ class WordQuestTests(unittest.TestCase):
         self.assertEqual(json.loads(updated['profile'])['level'],'basic')
         self.assertEqual(learning.recommendation(updated)['level'],'basic')
 
+    def test_guardian_can_set_level_without_granting_learner_privileges(self):
+        learner=self.login()['user']
+        self.assertEqual(self.post('/guardian/learner',{'userId':learner['id'],'level':'advanced','autoLevel':False,'goal':1}).status_code,403)
+        self.post('/logout',{})
+        self.login(True)
+        r=self.post('/guardian/learner',{'userId':learner['id'],'level':'basic','autoLevel':False,'goal':1})
+        self.assertEqual(r.status_code,200,r.get_json())
+        result=self.client.get('/api/guardian').get_json()['learners'][0]['user']
+        self.assertEqual(result['role'],'learner')
+        self.assertEqual(result['profile']['level'],'basic')
+        self.assertFalse(result['profile']['autoLevel'])
+
     def test_password_change_revokes_learner_sessions(self):
         learner=self.login()['user'];other=app.test_client()
         auth=self.post('/login',{'username':'guardian','password':'test-guardian-password'},client=other).get_json()
