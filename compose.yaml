@@ -1,0 +1,14 @@
+services:
+  wordquest:
+    build: .
+    ports:
+      - "127.0.0.1:4173:4173"
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      WORDQUEST_DATA_DIR: /data
+    volumes:
+      - wordquest-data:/data
+    restart: unless-stopped
+volumes:
+  wordquest-data:

@@ -1,0 +1,1086 @@
+{
+  "levels": [
+    {
+      "id": "foundation",
+      "name": "Foundation",
+      "tag": "Start with small words",
+      "icon": "sprout",
+      "color": "sage",
+      "description": "Pehle chhote words. Phir badi jeet."
+    },
+    {
+      "id": "basic",
+      "name": "Basic",
+      "tag": "Words around you",
+      "icon": "sun",
+      "color": "peach",
+      "description": "Roz ki duniya, English mein."
+    },
+    {
+      "id": "beginner",
+      "name": "Beginner",
+      "tag": "Your first sentences",
+      "icon": "book",
+      "color": "lavender",
+      "description": "Words ko jodo. Sentence padho."
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermediate",
+      "tag": "Connect your ideas",
+      "icon": "compass",
+      "color": "blue",
+      "description": "Questions, actions aur chhoti baatein."
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "tag": "Little stories, big ideas",
+      "icon": "flag",
+      "color": "rose",
+      "description": "Chhoti stories padho aur samjho."
+    }
+  ],
+  "lessons": [
+    {
+      "id": "lesson-0",
+      "level": "foundation",
+      "title": "Your first words",
+      "topic": "School",
+      "items": [
+        {
+          "id": "w-0-0",
+          "text": "bag",
+          "hi": "बैग / बस्ता",
+          "roman": "basta",
+          "wrong": [
+            "पानी",
+            "सूरज"
+          ],
+          "target": "bag"
+        },
+        {
+          "id": "w-0-1",
+          "text": "pen",
+          "hi": "कलम",
+          "roman": "kalam",
+          "wrong": [
+            "बिल्ली",
+            "घर"
+          ],
+          "target": "pen"
+        },
+        {
+          "id": "w-0-2",
+          "text": "book",
+          "hi": "किताब",
+          "roman": "kitab",
+          "wrong": [
+            "दूध",
+            "खेल"
+          ],
+          "target": "book"
+        },
+        {
+          "id": "w-0-3",
+          "text": "desk",
+          "hi": "मेज़",
+          "roman": "mez",
+          "wrong": [
+            "पेड़",
+            "जूता"
+          ],
+          "target": "desk"
+        }
+      ]
+    },
+    {
+      "id": "lesson-1",
+      "level": "foundation",
+      "title": "Hello, little animals",
+      "topic": "Animals",
+      "items": [
+        {
+          "id": "w-1-0",
+          "text": "cat",
+          "hi": "बिल्ली",
+          "roman": "billi",
+          "wrong": [
+            "कुत्ता",
+            "पक्षी"
+          ],
+          "target": "cat"
+        },
+        {
+          "id": "w-1-1",
+          "text": "dog",
+          "hi": "कुत्ता",
+          "roman": "kutta",
+          "wrong": [
+            "मछली",
+            "बिल्ली"
+          ],
+          "target": "dog"
+        },
+        {
+          "id": "w-1-2",
+          "text": "hen",
+          "hi": "मुर्गी",
+          "roman": "murgi",
+          "wrong": [
+            "गाय",
+            "घोड़ा"
+          ],
+          "target": "hen"
+        },
+        {
+          "id": "w-1-3",
+          "text": "cow",
+          "hi": "गाय",
+          "roman": "gaay",
+          "wrong": [
+            "चूहा",
+            "शेर"
+          ],
+          "target": "cow"
+        }
+      ]
+    },
+    {
+      "id": "lesson-2",
+      "level": "foundation",
+      "title": "A day outside",
+      "topic": "Nature",
+      "items": [
+        {
+          "id": "w-2-0",
+          "text": "sun",
+          "hi": "सूरज",
+          "roman": "suraj",
+          "wrong": [
+            "चाँद",
+            "बारिश"
+          ],
+          "target": "sun"
+        },
+        {
+          "id": "w-2-1",
+          "text": "sky",
+          "hi": "आसमान",
+          "roman": "aasman",
+          "wrong": [
+            "नदी",
+            "पेड़"
+          ],
+          "target": "sky"
+        },
+        {
+          "id": "w-2-2",
+          "text": "tree",
+          "hi": "पेड़",
+          "roman": "ped",
+          "wrong": [
+            "फूल",
+            "पत्थर"
+          ],
+          "target": "tree"
+        },
+        {
+          "id": "w-2-3",
+          "text": "rain",
+          "hi": "बारिश",
+          "roman": "baarish",
+          "wrong": [
+            "धूप",
+            "हवा"
+          ],
+          "target": "rain"
+        }
+      ]
+    },
+    {
+      "id": "lesson-3",
+      "level": "foundation",
+      "title": "Ready, set, go!",
+      "topic": "Actions",
+      "items": [
+        {
+          "id": "w-3-0",
+          "text": "run",
+          "hi": "दौड़ना",
+          "roman": "daudna",
+          "wrong": [
+            "बैठना",
+            "सोना"
+          ],
+          "target": "run"
+        },
+        {
+          "id": "w-3-1",
+          "text": "sit",
+          "hi": "बैठना",
+          "roman": "baithna",
+          "wrong": [
+            "दौड़ना",
+            "खाना"
+          ],
+          "target": "sit"
+        },
+        {
+          "id": "w-3-2",
+          "text": "eat",
+          "hi": "खाना",
+          "roman": "khana",
+          "wrong": [
+            "पीना",
+            "चलना"
+          ],
+          "target": "eat"
+        },
+        {
+          "id": "w-3-3",
+          "text": "read",
+          "hi": "पढ़ना",
+          "roman": "padhna",
+          "wrong": [
+            "खेलना",
+            "सोना"
+          ],
+          "target": "read"
+        }
+      ]
+    },
+    {
+      "id": "lesson-4",
+      "level": "basic",
+      "title": "At home",
+      "topic": "Home",
+      "items": [
+        {
+          "id": "w-4-0",
+          "text": "water",
+          "hi": "पानी",
+          "roman": "paani",
+          "wrong": [
+            "दूध",
+            "रोटी"
+          ],
+          "target": "water"
+        },
+        {
+          "id": "w-4-1",
+          "text": "food",
+          "hi": "भोजन / खाना",
+          "roman": "khana",
+          "wrong": [
+            "किताब",
+            "कमरा"
+          ],
+          "target": "food"
+        },
+        {
+          "id": "w-4-2",
+          "text": "door",
+          "hi": "दरवाज़ा",
+          "roman": "darwaza",
+          "wrong": [
+            "खिड़की",
+            "कुर्सी"
+          ],
+          "target": "door"
+        },
+        {
+          "id": "w-4-3",
+          "text": "chair",
+          "hi": "कुर्सी",
+          "roman": "kursi",
+          "wrong": [
+            "मेज़",
+            "बिस्तर"
+          ],
+          "target": "chair"
+        }
+      ]
+    },
+    {
+      "id": "lesson-5",
+      "level": "basic",
+      "title": "School essentials",
+      "topic": "School",
+      "items": [
+        {
+          "id": "w-5-0",
+          "text": "pencil",
+          "hi": "पेंसिल",
+          "roman": "pencil",
+          "wrong": [
+            "रबड़",
+            "बस्ता"
+          ],
+          "target": "pencil"
+        },
+        {
+          "id": "w-5-1",
+          "text": "teacher",
+          "hi": "शिक्षक / अध्यापक",
+          "roman": "shikshak",
+          "wrong": [
+            "दोस्त",
+            "खिलाड़ी"
+          ],
+          "target": "teacher"
+        },
+        {
+          "id": "w-5-2",
+          "text": "school",
+          "hi": "विद्यालय / स्कूल",
+          "roman": "school",
+          "wrong": [
+            "घर",
+            "बाज़ार"
+          ],
+          "target": "school"
+        },
+        {
+          "id": "w-5-3",
+          "text": "friend",
+          "hi": "दोस्त",
+          "roman": "dost",
+          "wrong": [
+            "भाई",
+            "अध्यापक"
+          ],
+          "target": "friend"
+        }
+      ]
+    },
+    {
+      "id": "lesson-6",
+      "level": "basic",
+      "title": "How do you feel?",
+      "topic": "Feelings",
+      "items": [
+        {
+          "id": "w-6-0",
+          "text": "happy",
+          "hi": "खुश",
+          "roman": "khush",
+          "wrong": [
+            "उदास",
+            "थका हुआ"
+          ],
+          "target": "happy"
+        },
+        {
+          "id": "w-6-1",
+          "text": "sad",
+          "hi": "उदास",
+          "roman": "udaas",
+          "wrong": [
+            "खुश",
+            "भूखा"
+          ],
+          "target": "sad"
+        },
+        {
+          "id": "w-6-2",
+          "text": "tired",
+          "hi": "थका हुआ",
+          "roman": "thaka hua",
+          "wrong": [
+            "प्यासा",
+            "खुश"
+          ],
+          "target": "tired"
+        },
+        {
+          "id": "w-6-3",
+          "text": "kind",
+          "hi": "दयालु",
+          "roman": "dayalu",
+          "wrong": [
+            "नाराज़",
+            "तेज़"
+          ],
+          "target": "kind"
+        }
+      ]
+    },
+    {
+      "id": "lesson-7",
+      "level": "basic",
+      "title": "Time to play",
+      "topic": "Play",
+      "items": [
+        {
+          "id": "w-7-0",
+          "text": "ball",
+          "hi": "गेंद",
+          "roman": "gend",
+          "wrong": [
+            "बल्ला",
+            "जूता"
+          ],
+          "target": "ball"
+        },
+        {
+          "id": "w-7-1",
+          "text": "bat",
+          "hi": "बल्ला",
+          "roman": "balla",
+          "wrong": [
+            "गेंद",
+            "पेड़"
+          ],
+          "target": "bat"
+        },
+        {
+          "id": "w-7-2",
+          "text": "team",
+          "hi": "दल / टीम",
+          "roman": "team",
+          "wrong": [
+            "पानी",
+            "किताब"
+          ],
+          "target": "team"
+        },
+        {
+          "id": "w-7-3",
+          "text": "play",
+          "hi": "खेलना",
+          "roman": "khelna",
+          "wrong": [
+            "पढ़ना",
+            "सोना"
+          ],
+          "target": "play"
+        }
+      ]
+    },
+    {
+      "id": "lesson-8",
+      "level": "beginner",
+      "title": "My school bag",
+      "topic": "School",
+      "items": [
+        {
+          "id": "w-8-0",
+          "text": "This is my bag.",
+          "hi": "यह मेरा बैग है।",
+          "roman": "Yeh mera bag hai",
+          "wrong": [
+            "यह तुम्हारा बैग है।",
+            "वह मेरा घर है।"
+          ],
+          "target": "bag"
+        },
+        {
+          "id": "w-8-1",
+          "text": "I have a book.",
+          "hi": "मेरे पास एक किताब है।",
+          "roman": "Mere paas ek kitab hai",
+          "wrong": [
+            "मेरे पास एक गेंद है।",
+            "मैं किताब पढ़ता हूँ।"
+          ],
+          "target": "book"
+        },
+        {
+          "id": "w-8-2",
+          "text": "This is a pen.",
+          "hi": "यह एक कलम है।",
+          "roman": "Yeh ek kalam hai",
+          "wrong": [
+            "यह एक मेज़ है।",
+            "वह एक पेड़ है।"
+          ],
+          "target": "pen"
+        },
+        {
+          "id": "w-8-3",
+          "text": "My bag is blue.",
+          "hi": "मेरा बैग नीला है।",
+          "roman": "Mera bag neela hai",
+          "wrong": [
+            "मेरा बैग लाल है।",
+            "मेरा घर नीला है।"
+          ],
+          "target": "blue"
+        }
+      ]
+    },
+    {
+      "id": "lesson-9",
+      "level": "beginner",
+      "title": "Meet my family",
+      "topic": "Home",
+      "items": [
+        {
+          "id": "w-9-0",
+          "text": "This is my home.",
+          "hi": "यह मेरा घर है।",
+          "roman": "Yeh mera ghar hai",
+          "wrong": [
+            "यह मेरा स्कूल है।",
+            "वह एक दुकान है।"
+          ],
+          "target": "home"
+        },
+        {
+          "id": "w-9-1",
+          "text": "My brother is kind.",
+          "hi": "मेरा भाई दयालु है।",
+          "roman": "Mera bhai dayalu hai",
+          "wrong": [
+            "मेरी बहन खुश है।",
+            "मेरा भाई थका है।"
+          ],
+          "target": "brother"
+        },
+        {
+          "id": "w-9-2",
+          "text": "I love my family.",
+          "hi": "मैं अपने परिवार से प्यार करता हूँ।",
+          "roman": "Main apne parivaar se pyar karta hoon",
+          "wrong": [
+            "मैं स्कूल जाता हूँ।",
+            "मुझे खेलना पसंद है।"
+          ],
+          "target": "family"
+        },
+        {
+          "id": "w-9-3",
+          "text": "We eat together.",
+          "hi": "हम साथ खाना खाते हैं।",
+          "roman": "Hum saath khana khate hain",
+          "wrong": [
+            "हम साथ खेलते हैं।",
+            "हम साथ पढ़ते हैं।"
+          ],
+          "target": "together"
+        }
+      ]
+    },
+    {
+      "id": "lesson-10",
+      "level": "beginner",
+      "title": "Let us play",
+      "topic": "Play",
+      "items": [
+        {
+          "id": "w-10-0",
+          "text": "I like cricket.",
+          "hi": "मुझे क्रिकेट पसंद है।",
+          "roman": "Mujhe cricket pasand hai",
+          "wrong": [
+            "मुझे दूध पसंद है।",
+            "मैं क्रिकेट देखता हूँ।"
+          ],
+          "target": "cricket"
+        },
+        {
+          "id": "w-10-1",
+          "text": "This is my ball.",
+          "hi": "यह मेरी गेंद है।",
+          "roman": "Yeh meri gend hai",
+          "wrong": [
+            "यह मेरा बल्ला है।",
+            "वह तुम्हारी गेंद है।"
+          ],
+          "target": "ball"
+        },
+        {
+          "id": "w-10-2",
+          "text": "We play outside.",
+          "hi": "हम बाहर खेलते हैं।",
+          "roman": "Hum bahar khelte hain",
+          "wrong": [
+            "हम अंदर पढ़ते हैं।",
+            "हम घर जाते हैं।"
+          ],
+          "target": "outside"
+        },
+        {
+          "id": "w-10-3",
+          "text": "I can run fast.",
+          "hi": "मैं तेज़ दौड़ सकता हूँ।",
+          "roman": "Main tez daud sakta hoon",
+          "wrong": [
+            "मैं धीरे चलता हूँ।",
+            "मैं तेज़ पढ़ता हूँ।"
+          ],
+          "target": "fast"
+        }
+      ]
+    },
+    {
+      "id": "lesson-11",
+      "level": "beginner",
+      "title": "My everyday world",
+      "topic": "Nature",
+      "items": [
+        {
+          "id": "w-11-0",
+          "text": "The sun is hot.",
+          "hi": "सूरज गर्म है।",
+          "roman": "Suraj garam hai",
+          "wrong": [
+            "पानी ठंडा है।",
+            "आसमान नीला है।"
+          ],
+          "target": "hot"
+        },
+        {
+          "id": "w-11-1",
+          "text": "The tree is green.",
+          "hi": "पेड़ हरा है।",
+          "roman": "Ped hara hai",
+          "wrong": [
+            "फूल लाल है।",
+            "पेड़ छोटा है।"
+          ],
+          "target": "green"
+        },
+        {
+          "id": "w-11-2",
+          "text": "I drink water.",
+          "hi": "मैं पानी पीता हूँ।",
+          "roman": "Main paani peeta hoon",
+          "wrong": [
+            "मैं खाना खाता हूँ।",
+            "मैं दूध पीता हूँ।"
+          ],
+          "target": "water"
+        },
+        {
+          "id": "w-11-3",
+          "text": "The sky is blue.",
+          "hi": "आसमान नीला है।",
+          "roman": "Aasman neela hai",
+          "wrong": [
+            "आसमान काला है।",
+            "नदी नीली है।"
+          ],
+          "target": "sky"
+        }
+      ]
+    },
+    {
+      "id": "lesson-12",
+      "level": "intermediate",
+      "title": "Ask a question",
+      "topic": "School",
+      "items": [
+        {
+          "id": "w-12-0",
+          "text": "Where is your book?",
+          "hi": "तुम्हारी किताब कहाँ है?",
+          "roman": "Tumhari kitab kahan hai",
+          "wrong": [
+            "तुम्हारा नाम क्या है?",
+            "तुम्हारी गेंद कहाँ है?"
+          ],
+          "target": "where"
+        },
+        {
+          "id": "w-12-1",
+          "text": "Can you help me?",
+          "hi": "क्या तुम मेरी मदद कर सकते हो?",
+          "roman": "Kya tum meri madad kar sakte ho",
+          "wrong": [
+            "क्या तुम खेल सकते हो?",
+            "क्या मैं घर जा सकता हूँ?"
+          ],
+          "target": "help"
+        },
+        {
+          "id": "w-12-2",
+          "text": "May I come in?",
+          "hi": "क्या मैं अंदर आ सकता हूँ?",
+          "roman": "Kya main andar aa sakta hoon",
+          "wrong": [
+            "क्या मैं बाहर जा सकता हूँ?",
+            "क्या मैं पानी पी सकता हूँ?"
+          ],
+          "target": "come"
+        },
+        {
+          "id": "w-12-3",
+          "text": "What is your name?",
+          "hi": "तुम्हारा नाम क्या है?",
+          "roman": "Tumhara naam kya hai",
+          "wrong": [
+            "तुम कहाँ रहते हो?",
+            "तुम्हारी उम्र क्या है?"
+          ],
+          "target": "name"
+        }
+      ]
+    },
+    {
+      "id": "lesson-13",
+      "level": "intermediate",
+      "title": "My daily routine",
+      "topic": "Home",
+      "items": [
+        {
+          "id": "w-13-0",
+          "text": "I brush my teeth every morning.",
+          "hi": "मैं हर सुबह अपने दाँत साफ करता हूँ।",
+          "roman": "Main har subah apne daant saaf karta hoon",
+          "wrong": [
+            "मैं हर रात किताब पढ़ता हूँ।",
+            "मैं सुबह खेलता हूँ।"
+          ],
+          "target": "morning"
+        },
+        {
+          "id": "w-13-1",
+          "text": "I wash my hands before eating.",
+          "hi": "मैं खाने से पहले हाथ धोता हूँ।",
+          "roman": "Main khane se pehle haath dhota hoon",
+          "wrong": [
+            "मैं खाने के बाद सोता हूँ।",
+            "मैं पानी पीता हूँ।"
+          ],
+          "target": "before"
+        },
+        {
+          "id": "w-13-2",
+          "text": "I go to school with my friend.",
+          "hi": "मैं अपने दोस्त के साथ स्कूल जाता हूँ।",
+          "roman": "Main apne dost ke saath school jata hoon",
+          "wrong": [
+            "मैं अकेला घर जाता हूँ।",
+            "मैं अपने भाई के साथ खेलता हूँ।"
+          ],
+          "target": "friend"
+        },
+        {
+          "id": "w-13-3",
+          "text": "I read a book before bed.",
+          "hi": "मैं सोने से पहले किताब पढ़ता हूँ।",
+          "roman": "Main sone se pehle kitab padhta hoon",
+          "wrong": [
+            "मैं सुबह खाना खाता हूँ।",
+            "मैं सोने से पहले खेलता हूँ।"
+          ],
+          "target": "read"
+        }
+      ]
+    },
+    {
+      "id": "lesson-14",
+      "level": "intermediate",
+      "title": "A good teammate",
+      "topic": "Play",
+      "items": [
+        {
+          "id": "w-14-0",
+          "text": "We take turns to bat.",
+          "hi": "हम बारी-बारी से बल्लेबाज़ी करते हैं।",
+          "roman": "Hum baari baari se ballebaazi karte hain",
+          "wrong": [
+            "हम साथ खाना खाते हैं।",
+            "हम गेंद ढूँढते हैं।"
+          ],
+          "target": "turns"
+        },
+        {
+          "id": "w-14-1",
+          "text": "Please pass me the ball.",
+          "hi": "कृपया मुझे गेंद दो।",
+          "roman": "Kripya mujhe gend do",
+          "wrong": [
+            "कृपया मुझे किताब दो।",
+            "कृपया दरवाज़ा खोलो।"
+          ],
+          "target": "pass"
+        },
+        {
+          "id": "w-14-2",
+          "text": "Our team plays well together.",
+          "hi": "हमारी टीम साथ मिलकर अच्छा खेलती है।",
+          "roman": "Hamari team saath milkar achha khelti hai",
+          "wrong": [
+            "हमारी टीम आज नहीं खेलती।",
+            "हमारा स्कूल बड़ा है।"
+          ],
+          "target": "team"
+        },
+        {
+          "id": "w-14-3",
+          "text": "We help each other.",
+          "hi": "हम एक-दूसरे की मदद करते हैं।",
+          "roman": "Hum ek doosre ki madad karte hain",
+          "wrong": [
+            "हम एक-दूसरे से दौड़ते हैं।",
+            "हम स्कूल जाते हैं।"
+          ],
+          "target": "help"
+        }
+      ]
+    },
+    {
+      "id": "lesson-15",
+      "level": "intermediate",
+      "title": "Notice the world",
+      "topic": "Nature",
+      "items": [
+        {
+          "id": "w-15-0",
+          "text": "It is raining outside today.",
+          "hi": "आज बाहर बारिश हो रही है।",
+          "roman": "Aaj bahar baarish ho rahi hai",
+          "wrong": [
+            "आज बाहर धूप है।",
+            "कल बारिश हुई थी।"
+          ],
+          "target": "raining"
+        },
+        {
+          "id": "w-15-1",
+          "text": "The bird is sitting on a tree.",
+          "hi": "पक्षी पेड़ पर बैठा है।",
+          "roman": "Pakshi ped par baitha hai",
+          "wrong": [
+            "बिल्ली मेज़ पर बैठी है।",
+            "पक्षी आसमान में उड़ रहा है।"
+          ],
+          "target": "bird"
+        },
+        {
+          "id": "w-15-2",
+          "text": "We should keep our park clean.",
+          "hi": "हमें अपना पार्क साफ रखना चाहिए।",
+          "roman": "Humein apna park saaf rakhna chahiye",
+          "wrong": [
+            "हमें पार्क में सोना चाहिए।",
+            "हमें पेड़ काटने चाहिए।"
+          ],
+          "target": "clean"
+        },
+        {
+          "id": "w-15-3",
+          "text": "Plants need water and sunlight.",
+          "hi": "पौधों को पानी और धूप चाहिए।",
+          "roman": "Paudhon ko paani aur dhoop chahiye",
+          "wrong": [
+            "पौधों को दूध चाहिए।",
+            "पक्षियों को पानी चाहिए।"
+          ],
+          "target": "plants"
+        }
+      ]
+    },
+    {
+      "id": "lesson-16",
+      "level": "advanced",
+      "title": "The missing pencil",
+      "topic": "School",
+      "items": [
+        {
+          "id": "w-16-0",
+          "text": "Ravi could not find his pencil.",
+          "hi": "रवि को अपनी पेंसिल नहीं मिल रही थी।",
+          "roman": "Ravi ko apni pencil nahi mil rahi thi",
+          "wrong": [
+            "रवि को अपनी किताब मिल गई।",
+            "रवि ने पेंसिल खरीदी।"
+          ],
+          "target": "find"
+        },
+        {
+          "id": "w-16-1",
+          "text": "He looked under his desk.",
+          "hi": "उसने अपनी मेज़ के नीचे देखा।",
+          "roman": "Usne apni mez ke neeche dekha",
+          "wrong": [
+            "उसने दरवाज़े के बाहर देखा।",
+            "वह मेज़ पर बैठा।"
+          ],
+          "target": "under"
+        },
+        {
+          "id": "w-16-2",
+          "text": "His friend found it near the door.",
+          "hi": "उसके दोस्त को वह दरवाज़े के पास मिली।",
+          "roman": "Uske dost ko woh darwaze ke paas mili",
+          "wrong": [
+            "उसे वह घर में मिली।",
+            "उसके भाई ने दरवाज़ा खोला।"
+          ],
+          "target": "near"
+        },
+        {
+          "id": "w-16-3",
+          "text": "Ravi thanked his friend for helping.",
+          "hi": "रवि ने मदद के लिए अपने दोस्त को धन्यवाद दिया।",
+          "roman": "Ravi ne madad ke liye apne dost ko dhanyavaad diya",
+          "wrong": [
+            "रवि ने अपने दोस्त से पेंसिल माँगी।",
+            "रवि ने अपने भाई को बुलाया।"
+          ],
+          "target": "thanked"
+        }
+      ]
+    },
+    {
+      "id": "lesson-17",
+      "level": "advanced",
+      "title": "A rainy afternoon",
+      "topic": "Nature",
+      "items": [
+        {
+          "id": "w-17-0",
+          "text": "Dark clouds covered the sky.",
+          "hi": "काले बादलों ने आसमान ढक लिया।",
+          "roman": "Kaale badalon ne aasman dhak liya",
+          "wrong": [
+            "आसमान में सूरज चमक रहा था।",
+            "पेड़ों पर पक्षी बैठे थे।"
+          ],
+          "target": "clouds"
+        },
+        {
+          "id": "w-17-1",
+          "text": "Meera ran home before the rain.",
+          "hi": "मीरा बारिश से पहले घर दौड़ी।",
+          "roman": "Meera baarish se pehle ghar daudi",
+          "wrong": [
+            "मीरा बारिश में स्कूल गई।",
+            "मीरा घर में सो रही थी।"
+          ],
+          "target": "before"
+        },
+        {
+          "id": "w-17-2",
+          "text": "She watched the rain from her window.",
+          "hi": "उसने अपनी खिड़की से बारिश देखी।",
+          "roman": "Usne apni khidki se baarish dekhi",
+          "wrong": [
+            "उसने दरवाज़े से धूप देखी।",
+            "वह बारिश में खेली।"
+          ],
+          "target": "window"
+        },
+        {
+          "id": "w-17-3",
+          "text": "After the rain a rainbow appeared.",
+          "hi": "बारिश के बाद इंद्रधनुष दिखाई दिया।",
+          "roman": "Baarish ke baad indradhanush dikhai diya",
+          "wrong": [
+            "बारिश से पहले अँधेरा हुआ।",
+            "बारिश के बाद बर्फ पड़ी।"
+          ],
+          "target": "rainbow"
+        }
+      ]
+    },
+    {
+      "id": "lesson-18",
+      "level": "advanced",
+      "title": "Our cricket match",
+      "topic": "Play",
+      "items": [
+        {
+          "id": "w-18-0",
+          "text": "Our team practised every evening.",
+          "hi": "हमारी टीम हर शाम अभ्यास करती थी।",
+          "roman": "Hamari team har shaam abhyaas karti thi",
+          "wrong": [
+            "हमारी टीम हर सुबह सोती थी।",
+            "हमारा स्कूल शाम को खुलता था।"
+          ],
+          "target": "practised"
+        },
+        {
+          "id": "w-18-1",
+          "text": "At first we missed many catches.",
+          "hi": "शुरू में हमने कई कैच छोड़े।",
+          "roman": "Shuru mein humne kai catch chhode",
+          "wrong": [
+            "शुरू में हमने मैच जीत लिया।",
+            "हमने कई किताबें पढ़ीं।"
+          ],
+          "target": "missed"
+        },
+        {
+          "id": "w-18-2",
+          "text": "We kept trying and improved together.",
+          "hi": "हम कोशिश करते रहे और साथ बेहतर हुए।",
+          "roman": "Hum koshish karte rahe aur saath behtar hue",
+          "wrong": [
+            "हमने कोशिश करना छोड़ दिया।",
+            "हम अकेले घर चले गए।"
+          ],
+          "target": "trying"
+        },
+        {
+          "id": "w-18-3",
+          "text": "Everyone felt proud of the team.",
+          "hi": "सबको टीम पर गर्व हुआ।",
+          "roman": "Sabko team par garv hua",
+          "wrong": [
+            "सब टीम से नाराज़ हुए।",
+            "सबको भूख लगी।"
+          ],
+          "target": "proud"
+        }
+      ]
+    },
+    {
+      "id": "lesson-19",
+      "level": "advanced",
+      "title": "A small act of kindness",
+      "topic": "Home",
+      "items": [
+        {
+          "id": "w-19-0",
+          "text": "A tired dog sat outside our house.",
+          "hi": "एक थका हुआ कुत्ता हमारे घर के बाहर बैठा था।",
+          "roman": "Ek thaka hua kutta hamare ghar ke bahar baitha tha",
+          "wrong": [
+            "एक बिल्ली घर के अंदर सो रही थी।",
+            "एक कुत्ता पार्क में दौड़ रहा था।"
+          ],
+          "target": "tired"
+        },
+        {
+          "id": "w-19-1",
+          "text": "I asked my brother to bring water.",
+          "hi": "मैंने अपने भाई से पानी लाने को कहा।",
+          "roman": "Maine apne bhai se paani lane ko kaha",
+          "wrong": [
+            "मैंने अपनी बहन से खाना माँगा।",
+            "मैंने अपने दोस्त को बुलाया।"
+          ],
+          "target": "bring"
+        },
+        {
+          "id": "w-19-2",
+          "text": "We put a bowl of water near the gate.",
+          "hi": "हमने फाटक के पास पानी का कटोरा रखा।",
+          "roman": "Humne phatak ke paas paani ka katora rakha",
+          "wrong": [
+            "हमने मेज़ पर किताब रखी।",
+            "हमने दरवाज़ा बंद किया।"
+          ],
+          "target": "bowl"
+        },
+        {
+          "id": "w-19-3",
+          "text": "The dog drank and rested in the shade.",
+          "hi": "कुत्ते ने पानी पिया और छाया में आराम किया।",
+          "roman": "Kutte ne paani piya aur chhaya mein aaram kiya",
+          "wrong": [
+            "कुत्ता धूप में दौड़ता रहा।",
+            "बिल्ली ने दूध पिया।"
+          ],
+          "target": "shade"
+        }
+      ]
+    }
+  ]
+}

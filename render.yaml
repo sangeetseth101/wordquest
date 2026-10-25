@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: wordquest
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    disk:
+      name: learning-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: APP_ORIGIN
+        sync: false
+      - key: WORDQUEST_SEED_USERNAME
+        value: parthlohani
+      - key: WORDQUEST_SEED_NAME
+        value: Parth Lohani
+      - key: WORDQUEST_SEED_PASSWORD
+        sync: false
+      - key: WORDQUEST_GUARDIAN_USERNAME
+        value: guardian
+      - key: WORDQUEST_GUARDIAN_PASSWORD
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
