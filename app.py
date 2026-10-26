@@ -13,19 +13,53 @@ from flask import Flask, request, jsonify, g, make_response, send_from_directory
 from werkzeug.exceptions import HTTPException
 import learning
 import tutor
-from storage import ROOT, DEFAULT_PROFILE, db, init_db, password_hash, password_ok, token_hash, user_public, dumps, get_config, set_config, api_key, save_api_key
+from storage import ROOT, DEFAULT_PROFILE, db, init_db, password_hash, password_ok, token_hash, user_public, dumps, get_config, set_config, api_key, save_api_key, StorageSetupError, database_url, serverless
 
 app=Flask(__name__,static_folder='public',static_url_path='/assets')
 app.config['MAX_CONTENT_LENGTH']=16000
-ORIGIN=os.environ.get('APP_ORIGIN','http://127.0.0.1:4173').rstrip('/')
-HOST=urllib.parse.urlparse(ORIGIN).netloc
-LOCAL=HOST in ('127.0.0.1:4173','localhost:4173')
+def deployment_origins():
+    configured = os.environ.get('APP_ORIGIN', '').rstrip('/')
+    if serverless() and configured in ('http://127.0.0.1:4173','http://localhost:4173'):
+        configured = ''
+    vercel_hosts = [os.environ.get(k, '').strip().rstrip('/') for k in ('VERCEL_PROJECT_PRODUCTION_URL', 'VERCEL_URL')]
+    primary = configured or next(('https://' + host for host in vercel_hosts if host), 'http://127.0.0.1:4173')
+    origins = {primary}
+    if serverless():
+        origins.update('https://' + host for host in vercel_hosts if host)
+    if primary in ('http://127.0.0.1:4173', 'http://localhost:4173'):
+        origins.update(('http://127.0.0.1:4173', 'http://localhost:4173'))
+    return primary, origins
+
+ORIGIN, ORIGINS = deployment_origins()
+HOSTS = {urllib.parse.urlparse(origin).netloc for origin in ORIGINS}
 COOKIE='wordquest_session'
 limits=defaultdict(deque)
 limit_lock=threading.Lock()
 # A dummy hash keeps unknown-account login work similar to known accounts.
 DUMMY_HASH=password_hash(secrets.token_urlsafe(24))
-init_db()
+_storage_signature = None
+_storage_lock = threading.Lock()
+
+
+def ensure_storage():
+    global _storage_signature
+    import storage
+    signature = (database_url(), str(storage.DATA_DIR), serverless())
+    if _storage_signature == signature:
+        return
+    with _storage_lock:
+        if _storage_signature == signature:
+            return
+        try:
+            init_db()
+        except StorageSetupError:
+            raise
+        except (RuntimeError, ValueError):
+            raise StorageSetupError('Initial account passwords need valid server settings. Check WORDQUEST_SEED_PASSWORD and WORDQUEST_GUARDIAN_PASSWORD; use at least 12 characters and replace example placeholders.') from None
+        except Exception as error:
+            logging.error('Account storage initialization failed (%s)', type(error).__name__)
+            raise StorageSetupError('Account storage could not be reached. Check DATABASE_URL and the database connection settings in your hosting dashboard.') from None
+        _storage_signature = signature
 
 def fail(message,status=400,code='bad_request'):
     return jsonify({'error':message,'code':code}),status
@@ -48,16 +82,19 @@ def limited(key,count,seconds):
 
 @app.before_request
 def secure_request():
-    allowed={HOST}
-    if LOCAL:allowed.update(('127.0.0.1:4173','localhost:4173'))
-    if request.host not in allowed and not app.testing and request.path!='/health':return fail('Unrecognised host.',400)
+    if request.host not in HOSTS and not app.testing and request.path!='/health':
+        return fail('Unrecognised host.',400)
     if request.method not in ('GET','HEAD','OPTIONS'):
-        origin=request.headers.get('Origin')
-        valid={ORIGIN}
-        if LOCAL:valid.update(('http://127.0.0.1:4173','http://localhost:4173'))
-        if origin not in valid:return fail('This request must come from WordQuest.',403,'origin_rejected')
-        if not request.is_json:return fail('Use application/json.',415)
+        if request.headers.get('Origin') not in ORIGINS:
+            return fail('This request must come from WordQuest.',403,'origin_rejected')
+        if not request.is_json:
+            return fail('Use application/json.',415)
+    # Public files never depend on the database being configured or writable.
+    if request.path.startswith('/api/'):
+        ensure_storage()
     g.user=None;g.session=None
+    if not request.path.startswith('/api/'):
+        return
     raw=request.cookies.get(COOKIE,'')
     if raw and len(raw)<200:
         with db() as conn:
@@ -85,6 +122,9 @@ def auth(role=None):
         return wrapped
     return wrap
 
+@app.errorhandler(StorageSetupError)
+def storage_error(e):return fail(str(e),503,'storage_not_configured')
+
 @app.errorhandler(ValueError)
 def invalid(e):return fail(str(e),400)
 @app.errorhandler(tutor.AIError)
@@ -97,8 +137,19 @@ def error(e):
 
 @app.get('/')
 def index():return send_from_directory(app.static_folder,'index.html')
+@app.get('/<filename>')
+def public_asset(filename):
+    if filename not in {'style.css','platform.css','curriculum.js','ui.js','app.js','boot.js'}:
+        return fail('Not found.',404)
+    return send_from_directory(app.static_folder,filename)
+
 @app.get('/health')
-def health():return jsonify({'status':'ok'})
+def health():
+    try:
+        ensure_storage()
+        return jsonify({'status':'ok','storage':'postgresql' if database_url() else 'sqlite'})
+    except StorageSetupError as e:
+        return fail(str(e),503,'storage_not_configured')
 @app.get('/api/session')
 def session():
     if not g.user:return jsonify({'user':None,'ai':{'connected':tutor.available()}})
@@ -119,7 +170,7 @@ def login():
     with db() as conn:
         conn.execute('INSERT INTO sessions VALUES(?,?,?,?)',(token_hash(token),user['id'],csrf,time.time()+7*86400))
     response=make_response(jsonify({'user':user_public(user),'csrf':csrf}))
-    response.set_cookie(COOKIE,token,httponly=True,secure=ORIGIN.startswith('https:'),samesite='Strict',max_age=7*86400,path='/')
+    response.set_cookie(COOKIE,token,httponly=True,secure=serverless() or ORIGIN.startswith('https:'),samesite='Strict',max_age=7*86400,path='/')
     return response
 
 @app.post('/api/logout')
@@ -246,7 +297,7 @@ def guardian():
         users=conn.execute("SELECT * FROM users WHERE role='learner'").fetchall()
         usage=conn.execute('SELECT count(*) calls,coalesce(sum(tokens),0) tokens,coalesce(sum(cost),0) cost FROM usage WHERE created_at>?',(time.time()-86400,)).fetchone()
     config=get_config()
-    return jsonify({'learners':[{'user':user_public(u),'stats':learning.stats(u['id']),'recommendation':learning.recommendation(u),'words':learning.word_collection(u['id'])[:12]} for u in users],'ai':{'configured':bool(api_key()),'connected':tutor.available(),'model':config.get('model',tutor.MODEL),'dailyLimit':config.get('daily_limit',100),'testedAt':config.get('tested_at'),'usage':dict(usage)}})
+    return jsonify({'learners':[{'user':user_public(u),'stats':learning.stats(u['id']),'recommendation':learning.recommendation(u),'words':learning.word_collection(u['id'])[:12]} for u in users],'ai':{'configured':bool(api_key()),'connected':tutor.available(),'model':config.get('model',tutor.MODEL),'dailyLimit':config.get('daily_limit',100),'keyManagedByEnvironment':serverless(),'testedAt':config.get('tested_at'),'usage':dict(usage)}})
 
 @app.post('/api/guardian/ai')
 @auth('guardian')

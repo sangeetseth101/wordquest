@@ -1,8 +1,11 @@
-"""SQLite persistence, password hashing and server-side sessions."""
+"""SQLite/PostgreSQL persistence, password hashing and server-side sessions."""
 import hashlib
 import hmac
 import json
 import os
+import re
+from contextlib import contextmanager
+from urllib.parse import urlparse
 from pathlib import Path
 import secrets
 import sqlite3
@@ -22,13 +25,74 @@ def load_env():
 load_env()
 DATA_DIR = Path(os.environ.get('WORDQUEST_DATA_DIR', ROOT / 'var'))
 
+class StorageSetupError(Exception):
+    """Safe configuration message; never contains a connection string."""
+
+
+def database_url():
+    return os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or ''
+
+
+def serverless():
+    return os.environ.get('VERCEL') == '1'
+
+
+def postgres_sql(statement):
+    """Translate the small set of SQLite expressions used by this application."""
+    statement = statement.replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'BIGSERIAL PRIMARY KEY')
+    statement = re.sub(r'\bREAL\b', 'DOUBLE PRECISION', statement)
+    statement = statement.replace("date(completed_at,'unixepoch','+5 hours','+30 minutes')", "to_char(to_timestamp(completed_at) AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD')")
+    statement = re.sub(r"json_extract\((adventures\.)?data,'\$\.level'\)", lambda m: '(' + (m.group(1) or '') + "data::jsonb ->> 'level')", statement)
+    # Every statement is application-owned. Bound values are never interpolated.
+    return statement.replace('?', '%s')
+
+
+class NamedRow(dict):
+    def __getitem__(self, key):
+        return tuple(self.values())[key] if isinstance(key, int) else super().__getitem__(key)
+
+
+class PostgresConnection:
+    def __init__(self, conn):
+        self.conn = conn
+
+    def execute(self, statement, params=()):
+        if statement.strip().upper() == 'BEGIN IMMEDIATE':
+            # Serialize read/modify/write attempts and usage reservations across instances.
+            return self.conn.execute('SELECT pg_advisory_xact_lock(1464947537)')
+        return self.conn.execute(postgres_sql(statement), params)
+
+    def executescript(self, script):
+        self.conn.execute('SELECT pg_advisory_xact_lock(1464947537)')
+        for statement in script.split(';'):
+            if statement.strip():
+                self.execute(statement)
+
+
+@contextmanager
 def db():
+    url = database_url()
+    if url:
+        import psycopg
+        settings = {'connect_timeout': 10, 'row_factory': lambda cursor: lambda values: NamedRow(zip([c.name for c in cursor.description], values))}
+        # Cloud connections must be encrypted; local test servers can use Unix sockets.
+        if urlparse(url).hostname not in ('localhost', '127.0.0.1', None):
+            settings['sslmode'] = 'require'
+        with psycopg.connect(url, **settings) as conn:
+            yield PostgresConnection(conn)
+        return
+    if serverless():
+        raise StorageSetupError('Account storage is not connected. Configure DATABASE_URL with a hosted PostgreSQL database in Vercel. Local SQLite cannot persist accounts on this host.')
     DATA_DIR.mkdir(parents=True, exist_ok=True, mode=0o700)
     conn = sqlite3.connect(DATA_DIR / 'wordquest.sqlite3', timeout=15)
     conn.row_factory = sqlite3.Row
     conn.execute('PRAGMA foreign_keys=ON')
     conn.execute('PRAGMA journal_mode=WAL')
-    return conn
+    try:
+        with conn:
+            yield conn
+    finally:
+        conn.close()
 
 def dumps(value):
     return json.dumps(value, ensure_ascii=False, separators=(',', ':'))
@@ -73,8 +137,15 @@ def init_db():
                 if len(password)<12 or password.startswith('REPLACE_'):
                     raise RuntimeError('Seed passwords must contain at least 12 characters.')
                 conn.execute('INSERT INTO users VALUES(?,?,?,?,?,?,?)',(secrets.token_hex(12),username.lower(),name,password_hash(password),role,dumps(DEFAULT_PROFILE),time.time()))
+        if serverless():
+            roles={r['role'] for r in conn.execute('SELECT role FROM users')}
+            missing=[]
+            if 'learner' not in roles:missing.append('WORDQUEST_SEED_PASSWORD')
+            if 'guardian' not in roles:missing.append('WORDQUEST_GUARDIAN_PASSWORD')
+            if missing:raise StorageSetupError('Create the initial accounts by setting '+', '.join(missing)+' in Vercel, then redeploy. Use passwords of at least 12 characters.')
         conn.execute('DELETE FROM sessions WHERE expires_at<?',(time.time(),))
     try:
+        if database_url():return
         os.chmod(DATA_DIR / 'wordquest.sqlite3',0o600)
     except OSError:
         pass
@@ -94,11 +165,13 @@ def set_config(values):
 def api_key():
     key = os.environ.get('OPENROUTER_API_KEY','')
     path = DATA_DIR / 'openrouter.key'
-    if path.exists():
+    if not serverless() and path.exists():
         key = path.read_text().strip()
     return key
 
 def save_api_key(key):
+    if serverless():
+        raise ValueError('Set OPENROUTER_API_KEY in Vercel Environment Variables, then redeploy. This host manages API secrets through its environment.')
     path = DATA_DIR / 'openrouter.key'
     tmp = DATA_DIR / ('.key-'+secrets.token_hex(8))
     fd = os.open(tmp, os.O_CREAT|os.O_EXCL|os.O_WRONLY, 0o600)

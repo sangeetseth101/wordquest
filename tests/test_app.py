@@ -22,13 +22,33 @@ class WordQuestTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory(prefix='wordquest-test-')
         storage.DATA_DIR=Path(self.tmp.name)
+        self.pg_url=os.environ.get('WORDQUEST_TEST_POSTGRES_URL')
+        self.previous_url=os.environ.get('DATABASE_URL')
+        self.schema=None
+        if self.pg_url:
+            import psycopg,secrets
+            from psycopg import sql
+            from urllib.parse import quote
+            self.schema='wordquest_test_'+secrets.token_hex(8)
+            with psycopg.connect(self.pg_url,autocommit=True) as conn:
+                conn.execute(sql.SQL('CREATE SCHEMA {}').format(sql.Identifier(self.schema)))
+            separator='&' if '?' in self.pg_url else '?'
+            os.environ['DATABASE_URL']=self.pg_url+separator+'options='+quote('-c search_path='+self.schema)
         storage.init_db()
         limits.clear()
         app.testing=True
         self.client=app.test_client()
         self.csrf=None
 
-    def tearDown(self):self.tmp.cleanup()
+    def tearDown(self):
+        if self.schema:
+            import psycopg
+            from psycopg import sql
+            with psycopg.connect(self.pg_url,autocommit=True) as conn:
+                conn.execute(sql.SQL('DROP SCHEMA {} CASCADE').format(sql.Identifier(self.schema)))
+        if self.previous_url is None:os.environ.pop('DATABASE_URL',None)
+        else:os.environ['DATABASE_URL']=self.previous_url
+        self.tmp.cleanup()
 
     def post(self,path,data,client=None,csrf=None):
         return (client or self.client).post('/api'+path,json=data,headers={'Origin':ORIGIN,'X-CSRF-Token':csrf or self.csrf or ''})
@@ -243,6 +263,47 @@ class WordQuestTests(unittest.TestCase):
         self.assertEqual(result['role'],'learner')
         self.assertEqual(result['profile']['level'],'basic')
         self.assertFalse(result['profile']['autoLevel'])
+
+    def test_public_assets_work_without_database_and_private_files_stay_private(self):
+        from html.parser import HTMLParser
+        class AssetParser(HTMLParser):
+            def handle_starttag(self,tag,attrs):
+                values=dict(attrs)
+                if tag=='script' and 'src' in values:paths.append(values['src'])
+                if tag=='link' and values.get('rel')=='stylesheet':paths.append(values['href'])
+        paths=[]
+        with patch('app.ensure_storage',side_effect=storage.StorageSetupError('Storage missing')):
+            page=self.client.get('/')
+            self.assertEqual(page.status_code,200)
+            AssetParser().feed(page.get_data(as_text=True))
+            page.close()
+            self.assertGreaterEqual(len(paths),6)
+            for path in paths:
+                self.assertNotIn('/assets/',path)
+                response=self.client.get(path)
+                self.assertEqual(response.status_code,200,path)
+                self.assertTrue('javascript' in response.content_type or 'text/css' in response.content_type,path)
+                response.close()
+        self.assertEqual(self.client.get('/requirements.txt').status_code,404)
+
+    def test_missing_serverless_storage_is_an_actionable_response_not_a_crash(self):
+        with patch.dict(os.environ,{'VERCEL':'1','DATABASE_URL':'','POSTGRES_URL':''}):
+            with patch('storage.DATA_DIR',Path('/unwritable-serverless-root')):
+                response=self.client.get('/api/session')
+                self.assertEqual(response.status_code,503,response.get_json())
+                self.assertEqual(response.get_json()['code'],'storage_not_configured')
+                self.assertIn('DATABASE_URL',response.get_json()['error'])
+                page=self.client.get('/')
+                self.assertEqual(page.status_code,200)
+                page.close()
+
+    def test_vercel_origin_is_inferred_without_trusting_arbitrary_hosts(self):
+        from app import deployment_origins
+        with patch.dict(os.environ,{'VERCEL':'1','APP_ORIGIN':'','VERCEL_PROJECT_PRODUCTION_URL':'wordquest-cyan.vercel.app','VERCEL_URL':'wordquest-preview.vercel.app'}):
+            primary,origins=deployment_origins()
+            self.assertEqual(primary,'https://wordquest-cyan.vercel.app')
+            self.assertIn('https://wordquest-preview.vercel.app',origins)
+            self.assertNotIn('https://attacker.vercel.app',origins)
 
     def test_password_change_revokes_learner_sessions(self):
         learner=self.login()['user'];other=app.test_client()

@@ -25,7 +25,7 @@ def stats(user_id):
         known={(r['word'],r['kind']) for r in attempts if r['correct']}
         scored=[r for r in attempts if r['kind'] in ('type','meaning') and not r['assisted']]
         recent=scored[-30:]
-        days={r['day']:r['n'] for r in conn.execute("SELECT date(completed_at,'unixepoch','+5 hours','+30 minutes') day,count(*) n FROM adventures WHERE user_id=? AND completed_at IS NOT NULL GROUP BY day",(user_id,))}
+        days={r['practice_day']:r['n'] for r in conn.execute("SELECT date(completed_at,'unixepoch','+5 hours','+30 minutes') AS practice_day,count(*) AS n FROM adventures WHERE user_id=? AND completed_at IS NOT NULL GROUP BY practice_day",(user_id,))}
         due=conn.execute("SELECT count(DISTINCT word) FROM skills WHERE user_id=? AND stage IN ('type','meaning') AND due_at<=?",(user_id,time.time())).fetchone()[0]
     today=(datetime.now(timezone.utc)+timedelta(hours=5,minutes=30)).date()
     cursor=today if str(today) in days else today-timedelta(days=1)
@@ -52,7 +52,7 @@ def recommendation(user):
 def context(user,include_chat=False):
     profile=json.loads(user['profile']);rec=recommendation(user)
     with db() as conn:
-        due=conn.execute("SELECT word,english,hindi,roman,max(attempts-successes) misses FROM skills WHERE user_id=? AND stage IN ('type','meaning') AND due_at<=? GROUP BY word ORDER BY misses DESC,due_at LIMIT 6",(user['id'],time.time())).fetchall()
+        due=conn.execute("SELECT word,english,hindi,roman,misses FROM (SELECT word,english,hindi,roman,attempts-successes misses,due_at,row_number() OVER (PARTITION BY word ORDER BY attempts-successes DESC,due_at,stage) rownum FROM skills WHERE user_id=? AND stage IN ('type','meaning') AND due_at<=?) ranked WHERE rownum=1 ORDER BY misses DESC,due_at LIMIT 6",(user['id'],time.time())).fetchall()
         recent=conn.execute('SELECT word FROM events WHERE user_id=? ORDER BY created_at DESC LIMIT 30',(user['id'],)).fetchall()
     evidence=stats(user['id'])
     recent_chat=[]
@@ -151,5 +151,5 @@ def answer(user,adventure_id,event_id,stage,value,assisted=False,grade=None,expe
 
 def word_collection(user_id):
     with db() as conn:
-        rows=conn.execute("SELECT word,english,hindi,roman,sum(attempts) attempts,sum(successes) successes,coalesce(min(CASE WHEN stage IN ('type','meaning') THEN due_at END),min(due_at)) due_at FROM skills WHERE user_id=? GROUP BY word ORDER BY due_at",(user_id,)).fetchall()
+        rows=conn.execute("WITH totals AS (SELECT word,sum(attempts) attempts,sum(successes) successes,coalesce(min(CASE WHEN stage IN ('type','meaning') THEN due_at END),min(due_at)) due_at FROM skills WHERE user_id=? GROUP BY word), examples AS (SELECT word,english,hindi,roman,row_number() OVER (PARTITION BY word ORDER BY due_at,stage) rownum FROM skills WHERE user_id=?) SELECT examples.word,english,hindi,roman,attempts,successes,due_at FROM examples JOIN totals ON examples.word=totals.word WHERE rownum=1 ORDER BY due_at",(user_id,user_id)).fetchall()
         return [dict(r) for r in rows]

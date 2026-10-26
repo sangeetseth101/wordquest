@@ -2,6 +2,7 @@
 .env.*
 !.env.example
 .venv/
+.vercel/
 var/
 __pycache__/
 *.pyc

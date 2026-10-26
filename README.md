@@ -5,7 +5,7 @@ A personalised English reading app with Hindi/Hinglish guidance, a conversationa
 ## What works
 
 - Password-protected learner and guardian accounts; salted scrypt hashes and server-side sessions.
-- First-session interests and starting level; persistent learning history in SQLite.
+- First-session interests and starting level; persistent learning history in SQLite locally or PostgreSQL on Vercel.
 - Spoken tutor replies, push-to-talk input and editable transcripts using browser speech features.
 - OpenRouter-backed conversations, fresh four-item adventures, and assessment of meanings expressed in the learner’s own words.
 - Five reading levels, 20 prepared lessons and 80 prepared word/sentence activities.
@@ -57,9 +57,22 @@ Browser speech synthesis is device dependent. Microphone transcription may use t
 node --check public/app.js
 ```
 
-Backend tests cover login and cookies, CSRF/origin checks, guardian permissions, private-file denial, cross-account isolation, persisted progress, idempotent attempts, stale item rejection, complete lesson progression, hints and level evidence, key confidentiality, provider request/response handling, invalid generated content, usage limits and password/session revocation. Model responses are mocked in automated tests; they do not prove a live provider connection.
+Backend tests cover login and cookies, CSRF/origin checks, guardian permissions, private-file denial, cross-account isolation, persisted progress, idempotent attempts, stale item rejection, complete lesson progression, hints and level evidence, key confidentiality, provider request/response handling, invalid generated content, usage limits and password/session revocation. CI runs the suite against SQLite and PostgreSQL. To test a disposable PostgreSQL server locally, set `WORDQUEST_TEST_POSTGRES_URL`; each test creates and removes its own isolated schema. Model responses are mocked in automated tests; they do not prove a live provider connection.
 
 ## Hosting
+
+### Vercel + PostgreSQL
+
+The repository includes `vercel.json` for the Flask backend. Public assets use root paths so Vercel's static CDN serves the same files as the local server.
+
+1. Connect this repository as a Vercel Flask project.
+2. Connect a hosted PostgreSQL database, such as the Neon Free plan, to **Production**. The server accepts `DATABASE_URL` or `POSTGRES_URL` and requires TLS for cloud connections.
+3. Set the five `WORDQUEST_SEED_*` / `WORDQUEST_GUARDIAN_*` account variables from `.env.example` as private production environment variables. Use real passwords, not the example placeholders. Set `APP_ORIGIN` to the exact public HTTPS origin.
+4. Deploy. The first API request creates the schema and initial accounts. `/health` confirms storage is reachable. A missing database produces a readable setup error; it never silently falls back to temporary storage.
+5. To connect AI on Vercel, set `OPENROUTER_API_KEY` as a private environment variable and redeploy, then enable AI and test a real response in Guardian controls. Cloud API keys cannot be saved to the function filesystem.
+
+Do not connect preview deployments to the production database. Supply an isolated preview database and separate seed credentials if previews need working accounts. Existing accounts are not reset during deployment. Back up the database independently. The login rate limiter is per function instance, so a public multi-user rollout needs a shared limiter.
+
 
 ### Docker
 
@@ -75,12 +88,12 @@ A `render.yaml` blueprint is included for a Docker service with a persistent dis
 
 The process listens on port 4173. Keep `WORDQUEST_DATA_DIR=/data` on a persistent volume. A single instance with one worker/four threads is the supported SQLite deployment; use a shared database and shared rate limiter before scaling to multiple instances. Configure HTTPS at the hosting layer. For another platform, deploy the Dockerfile with a persistent `/data` volume and the same environment variables.
 
-GitHub Pages is not supported: account authentication and AI requests require a backend. Pushing to GitHub alone does not deploy the server. No public deployment is created automatically and no hosting account is charged by this repository.
+GitHub Pages is not supported: account authentication and AI requests require a backend. Pushing to GitHub alone does not deploy the server. An already-connected hosting project may deploy on pushes to its configured branch. Review hosting and database plan limits in their dashboards; this repository does not select or upgrade a plan.
 
 ## Main files
 
 - `app.py`: authenticated API and static frontend hosting.
-- `storage.py`: SQLite schema, password hashes, sessions and private server key.
+- `storage.py`: SQLite/PostgreSQL schema, password hashes, sessions and private server key.
 - `learning.py`: lesson progression, evidence, review scheduling and level suggestions.
 - `tutor.py`: OpenRouter boundary, context, structured schemas and validation.
 - `public/`: responsive learner and guardian interface.
